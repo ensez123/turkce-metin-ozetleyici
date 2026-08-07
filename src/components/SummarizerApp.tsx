@@ -59,12 +59,12 @@ export function SummarizerApp() {
     }
 
     if (inputText.length > MAX_CHAR_LIMIT) {
-      setErrorMsg(`Metin 4000 karakter sınırını aşıyor (${inputText.length.toLocaleString()} / 4.000). Lütfen metninizi kısaltın.`);
+      setErrorMsg(`Metin 4000 karakter sınırını aşıyor (${inputText.length.toLocaleString('tr-TR')} / 4.000). Lütfen metninizi kısaltın.`);
       return;
     }
 
     if (inputText.trim().length < 25) {
-      setErrorMsg('Metin çok kısa. Anlamlı bir özet için lütfen en az 1-2 cümle metin girin.');
+      setErrorMsg('Metin çok kısa. Anlamlı bir özet için lütfen en az 1–2 cümle metin girin.');
       return;
     }
 
@@ -200,10 +200,14 @@ export function SummarizerApp() {
 
   return (
     <>
-      {/* Toast Notification */}
+      {/* Toast Notification with role="status" and aria-live="polite" */}
       {toastMessage && (
-        <div className="fixed bottom-5 right-5 z-50 flex items-center gap-2.5 px-4 py-3 bg-emerald-600/90 text-white text-sm font-medium rounded-xl shadow-2xl backdrop-blur-md border border-emerald-400/40 animate-in fade-in slide-in-from-bottom-5 duration-300">
-          <CheckCircle2 className="w-4 h-4 text-emerald-200 shrink-0" />
+        <div
+          role="status"
+          aria-live="polite"
+          className="fixed bottom-5 right-5 z-50 flex items-center gap-2.5 px-4 py-3 bg-emerald-600/90 text-white text-sm font-medium rounded-xl shadow-2xl backdrop-blur-md border border-emerald-400/40 animate-in fade-in slide-in-from-bottom-5 duration-300"
+        >
+          <CheckCircle2 className="w-4 h-4 text-emerald-200 shrink-0" aria-hidden="true" />
           <span>{toastMessage}</span>
         </div>
       )}
@@ -221,16 +225,21 @@ export function SummarizerApp() {
         onClear={handleClear}
       />
 
-      {/* Loading State Banner */}
+      {/* Loading State Banner with role="status" and aria-live="polite" */}
       {isLoading && (
-        <div className="glass-card rounded-2xl p-8 text-center space-y-4 border border-indigo-500/40 animate-pulse-subtle shadow-2xl">
+        <div
+          role="status"
+          aria-live="polite"
+          aria-label="Gemini Yapay Zekası özetinizi oluşturuyor"
+          className="glass-card rounded-2xl p-8 text-center space-y-4 border border-indigo-500/40 animate-pulse-subtle shadow-2xl"
+        >
           <div className="inline-flex p-4 rounded-full bg-gradient-to-tr from-indigo-500/20 to-purple-500/20 text-indigo-400 ring-1 ring-indigo-500/30">
-            <Sparkles className="w-8 h-8 animate-spin" />
+            <Sparkles className="w-8 h-8 animate-spin" aria-hidden="true" />
           </div>
           <div>
             <h3 className="text-lg font-bold text-slate-100">Gemini Yapay Zekası Yanıt Hazırlıyor</h3>
             <p className="text-sm text-slate-400 mt-1 max-w-md mx-auto">
-              Metniniz işleniyor, 3-5 cümlelik özet, ana maddeler ve akıllı yanıtlar üretiliyor...
+              Metniniz işleniyor, 3–5 cümlelik özet, ana maddeler ve akıllı yanıtlar üretiliyor…
             </p>
           </div>
         </div>

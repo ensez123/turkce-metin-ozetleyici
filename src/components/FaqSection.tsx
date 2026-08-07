@@ -9,7 +9,7 @@ const FAQ_ITEMS: FaqItem[] = [
   },
   {
     q: '2. Hangi yapay zeka teknolojisi kullanılıyor?',
-    a: 'Uygulamamız Google Gemini AI altyapısını kullanmaktadır. Gelişmiş doğal dil işleme (NLP) yeteneği sayesinde Türkçe metinleri bağlamından koparmadan 3-5 cümlelik özetlere ve ana maddelere dönüştürür.'
+    a: 'Uygulamamız Google Gemini AI altyapısını kullanmaktadır. Gelişmiş doğal dil işleme (NLP) yeteneği sayesinde Türkçe metinleri bağlamından koparmadan 3–5 cümlelik özetlere ve ana maddelere dönüştürür.'
   },
   {
     q: '3. Hangi tür metinleri özetleyebilirim?',
@@ -27,7 +27,7 @@ const FAQ_ITEMS: FaqItem[] = [
 
 export function FaqSection() {
   return (
-    <section id="sss-section" className="pt-10 border-t border-slate-800/80 space-y-8">
+    <section id="sss-section" className="pt-10 border-t border-slate-800/80 space-y-8 scroll-mt-24">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
@@ -49,10 +49,10 @@ export function FaqSection() {
       <div className="glass-card rounded-2xl p-6 sm:p-8 border border-slate-700/60 space-y-6">
         <div className="flex items-center gap-2.5 pb-3 border-b border-slate-800/80">
           <div className="p-2 rounded-xl bg-purple-500/20 text-purple-400">
-            <HelpCircle className="w-5 h-5" />
+            <HelpCircle className="w-5 h-5" aria-hidden="true" />
           </div>
           <div>
-            <h2 className="text-xl sm:text-2xl font-bold text-slate-100">Sıkça Sorulan Sorular (SSS)</h2>
+            <h2 className="text-xl sm:text-2xl font-bold text-slate-100 text-pretty">Sıkça Sorulan Sorular (SSS)</h2>
             <p className="text-xs text-slate-400">Türkçe Metin Özetleyici hakkında merak edilen tüm sorular ve yanıtları</p>
           </div>
         </div>
