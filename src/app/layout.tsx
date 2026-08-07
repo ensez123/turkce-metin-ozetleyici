@@ -1,12 +1,18 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import "./globals.css";
 
-const inter = Inter({ subsets: ["latin", "latin-ext"] });
+const inter = Inter({ subsets: ["latin", "latin-ext"], display: "swap" });
 
 const siteUrl = "https://turkce-metin-ozetleyici.vercel.app";
+
+export const viewport: Viewport = {
+  themeColor: "#020617",
+  width: "device-width",
+  initialScale: 1,
+};
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
