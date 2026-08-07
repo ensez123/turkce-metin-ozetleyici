@@ -11,7 +11,7 @@ import {
   Check,
   Copy,
 } from 'lucide-react';
-import { QAItem } from '@/types';
+import { useSummarizerContext } from './SummarizerContext';
 
 const PRESET_QUESTIONS = [
   'Daha detaylı açıkla',
@@ -20,33 +20,29 @@ const PRESET_QUESTIONS = [
   'Karşıt görüş ne olabilir?'
 ];
 
-interface QuestionAnsweringProps {
-  questionInput: string;
-  setQuestionInput: (val: string) => void;
-  isAsking: boolean;
-  askError: string | null;
-  setAskError: (msg: string | null) => void;
-  qaList: QAItem[];
-  copiedQAId: string | null;
-  onAskQuestion: (qText?: string) => void;
-  onSelectPreset: (qText: string) => void;
-  onCopyQA: (id: string, text: string) => void;
-  qaSectionRef?: React.RefObject<HTMLDivElement | null>;
-}
+export const QuestionAnswering = memo(function QuestionAnswering() {
+  const {
+    state: {
+      result,
+      isLoading,
+      questionInput,
+      isAsking,
+      askError,
+      qaList,
+      copiedQAId,
+    },
+    actions: {
+      setQuestionInput,
+      setAskError,
+      handleAskQuestion,
+      handleSelectPresetQuestion,
+      handleCopyQA,
+    },
+    meta: { qaSectionRef },
+  } = useSummarizerContext();
 
-export const QuestionAnswering = memo(function QuestionAnswering({
-  questionInput,
-  setQuestionInput,
-  isAsking,
-  askError,
-  setAskError,
-  qaList,
-  copiedQAId,
-  onAskQuestion,
-  onSelectPreset,
-  onCopyQA,
-  qaSectionRef,
-}: QuestionAnsweringProps) {
+  if (!result || isLoading) return null;
+
   return (
     <div ref={qaSectionRef} className="glass-card rounded-2xl p-6 sm:p-7 border border-purple-500/35 shadow-2xl space-y-5">
       <div className="flex items-center justify-between pb-3.5 border-b border-slate-800/80">
@@ -72,7 +68,7 @@ export const QuestionAnswering = memo(function QuestionAnswering({
             <button
               key={idx}
               type="button"
-              onClick={() => onSelectPreset(q)}
+              onClick={() => handleSelectPresetQuestion(q)}
               disabled={isAsking}
               aria-label={`"${q}" sorusunu seç`}
               className="px-3 py-2 text-xs rounded-lg bg-slate-800/80 hover:bg-purple-600/30 text-slate-300 hover:text-purple-200 border border-slate-700/70 transition-colors text-left cursor-pointer disabled:opacity-50 font-medium min-h-[38px] focus-visible:ring-2 focus-visible:ring-purple-500 focus-visible:outline-none"
@@ -102,7 +98,7 @@ export const QuestionAnswering = memo(function QuestionAnswering({
               onKeyDown={(e) => {
                 if (e.key === 'Enter' && !isAsking && questionInput.trim()) {
                   e.preventDefault();
-                  onAskQuestion();
+                  handleAskQuestion();
                 }
               }}
               autoComplete="off"
@@ -113,7 +109,7 @@ export const QuestionAnswering = memo(function QuestionAnswering({
 
           <button
             type="button"
-            onClick={() => onAskQuestion()}
+            onClick={() => handleAskQuestion()}
             disabled={isAsking || !questionInput.trim()}
             aria-label={isAsking ? 'Soru yanıtlanıyor, lütfen bekleyin' : 'Soruyu gönder'}
             className={`w-full sm:w-auto px-6 py-3 rounded-xl font-bold text-white transition-all flex items-center justify-center gap-2 shrink-0 text-sm min-h-[48px] focus-visible:ring-2 focus-visible:ring-purple-400 focus-visible:outline-none ${
@@ -177,7 +173,7 @@ export const QuestionAnswering = memo(function QuestionAnswering({
                 <div className="flex justify-end pt-1">
                   <button
                     type="button"
-                    onClick={() => onCopyQA(item.id, `Soru: ${item.question}\nCevap: ${item.answer}`)}
+                    onClick={() => handleCopyQA(item.id, `Soru: ${item.question}\nCevap: ${item.answer}`)}
                     aria-label={copiedQAId === item.id ? 'Yanıt panoya kopyalandı' : 'Yanıtı panoya kopyala'}
                     className="flex items-center gap-1.5 text-[11px] text-slate-400 hover:text-slate-200 bg-slate-800/80 hover:bg-slate-700 px-3 py-1.5 rounded-md border border-slate-700 transition-colors cursor-pointer min-h-[38px] focus-visible:ring-2 focus-visible:ring-purple-500 focus-visible:outline-none"
                   >

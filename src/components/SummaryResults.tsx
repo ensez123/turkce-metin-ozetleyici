@@ -11,25 +11,19 @@ import {
   TrendingDown,
   ArrowRight,
 } from 'lucide-react';
-import { SummaryResult } from '@/types';
+import { useSummarizerContext } from './SummarizerContext';
 
-interface SummaryResultsProps {
-  result: SummaryResult;
-  copiedSummary: boolean;
-  copiedPoints: boolean;
-  onCopySummary: () => void;
-  onCopyPoints: () => void;
-}
+export const SummaryResults = memo(function SummaryResults() {
+  const {
+    state: { result, isLoading, copiedSummary, copiedPoints },
+    actions: { handleCopySummary, handleCopyPoints },
+    meta: { resultsRef },
+  } = useSummarizerContext();
 
-export const SummaryResults = memo(function SummaryResults({
-  result,
-  copiedSummary,
-  copiedPoints,
-  onCopySummary,
-  onCopyPoints,
-}: SummaryResultsProps) {
+  if (!result || isLoading) return null;
+
   return (
-    <div className="space-y-6 pt-2 animate-in fade-in slide-in-from-bottom-4 duration-500">
+    <div ref={resultsRef} className="space-y-6 pt-2 animate-in fade-in slide-in-from-bottom-4 duration-500">
       {/* SaaS Dashboard Stats Metric Bar */}
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4">
         <div className="glass-card rounded-xl p-4 border border-slate-700/60 flex items-center gap-3.5">
@@ -87,7 +81,7 @@ export const SummaryResults = memo(function SummaryResults({
 
           <button
             type="button"
-            onClick={onCopySummary}
+            onClick={handleCopySummary}
             aria-label={copiedSummary ? 'Kısa özet panoya kopyalandı' : 'Kısa özeti panoya kopyala'}
             className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold border border-slate-700 transition-colors cursor-pointer min-h-[44px] focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:outline-none"
           >
@@ -122,7 +116,7 @@ export const SummaryResults = memo(function SummaryResults({
 
           <button
             type="button"
-            onClick={onCopyPoints}
+            onClick={handleCopyPoints}
             aria-label={copiedPoints ? 'Ana noktalar panoya kopyalandı' : 'Ana noktaları panoya kopyala'}
             className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold border border-slate-700 transition-colors cursor-pointer min-h-[44px] focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:outline-none"
           >

@@ -10,39 +10,28 @@ import {
   AlertCircle,
 } from 'lucide-react';
 import { SAMPLE_TEXTS } from '@/utils/mockSummarizer';
+import { useSummarizerContext } from './SummarizerContext';
 
-const MAX_CHAR_LIMIT = 4000;
+export function SummarizerForm() {
+  const {
+    state: { inputText, isLoading, errorMsg },
+    actions: {
+      setInputText,
+      setErrorMsg,
+      handleSummarize,
+      handleLoadSample,
+      handlePaste,
+      handleClear,
+    },
+    meta: { maxCharLimit },
+  } = useSummarizerContext();
 
-interface SummarizerFormProps {
-  inputText: string;
-  setInputText: (text: string) => void;
-  isLoading: boolean;
-  errorMsg: string | null;
-  setErrorMsg: (msg: string | null) => void;
-  onSummarize: () => void;
-  onLoadSample: (text: string) => void;
-  onPaste: () => void;
-  onClear: () => void;
-}
-
-export function SummarizerForm({
-  inputText,
-  setInputText,
-  isLoading,
-  errorMsg,
-  setErrorMsg,
-  onSummarize,
-  onLoadSample,
-  onPaste,
-  onClear,
-}: SummarizerFormProps) {
-  // Derived state memoization (rerender-derived-state-no-effect)
   const charCount = inputText.length;
   const wordCount = useMemo(() => {
     return inputText.trim() ? inputText.trim().split(/\s+/).length : 0;
   }, [inputText]);
 
-  const isOverLimit = charCount > MAX_CHAR_LIMIT;
+  const isOverLimit = charCount > maxCharLimit;
 
   const handleTextChange = useCallback(
     (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -69,7 +58,7 @@ export function SummarizerForm({
             <button
               key={sample.id}
               type="button"
-              onClick={() => onLoadSample(sample.text)}
+              onClick={() => handleLoadSample(sample.text)}
               aria-label={`"${sample.title}" örnek metnini yükle`}
               className="px-3 py-2 text-xs rounded-md bg-slate-800/90 hover:bg-indigo-600/30 text-slate-300 hover:text-indigo-300 border border-slate-700/70 transition-colors cursor-pointer font-medium min-h-[36px] sm:min-h-[40px] focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:outline-none"
             >
@@ -81,7 +70,7 @@ export function SummarizerForm({
         <div className="flex items-center gap-2 self-end sm:self-auto">
           <button
             type="button"
-            onClick={onPaste}
+            onClick={handlePaste}
             title="Panodan Yapıştır"
             aria-label="Panodan metin yapıştır"
             className="flex items-center gap-1.5 px-3 py-2 text-xs rounded-md bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700/80 transition-colors cursor-pointer font-medium min-h-[44px] focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:outline-none"
@@ -92,7 +81,7 @@ export function SummarizerForm({
           {inputText && (
             <button
               type="button"
-              onClick={onClear}
+              onClick={handleClear}
               title="Metni Temizle"
               aria-label="Metin giriş alanını temizle"
               className="flex items-center gap-1.5 px-3 py-2 text-xs rounded-md bg-slate-800 hover:bg-rose-500/20 text-slate-300 hover:text-rose-300 border border-slate-700/80 transition-colors cursor-pointer font-medium min-h-[44px] focus-visible:ring-2 focus-visible:ring-rose-500 focus-visible:outline-none"
@@ -129,7 +118,7 @@ export function SummarizerForm({
           className={`h-full transition-all duration-300 ${
             isOverLimit ? 'bg-rose-500' : charCount > 3500 ? 'bg-amber-400' : 'bg-gradient-to-r from-indigo-500 to-purple-500'
           }`}
-          style={{ width: `${Math.min(100, (charCount / MAX_CHAR_LIMIT) * 100)}%` }}
+          style={{ width: `${Math.min(100, (charCount / maxCharLimit) * 100)}%` }}
         />
       </div>
 
@@ -161,7 +150,7 @@ export function SummarizerForm({
 
         <button
           type="button"
-          onClick={onSummarize}
+          onClick={handleSummarize}
           disabled={isLoading || !inputText.trim() || isOverLimit}
           aria-label={isLoading ? 'Metin özetleniyor, lütfen bekleyin' : 'Metni ücretsiz özetle'}
           className={`w-full sm:w-auto px-8 py-3.5 sm:py-4 rounded-xl font-bold text-white shadow-xl transition-all flex items-center justify-center gap-2.5 text-sm sm:text-base min-h-[48px] focus-visible:ring-2 focus-visible:ring-indigo-400 focus-visible:outline-none ${

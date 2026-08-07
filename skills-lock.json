@@ -31,6 +31,12 @@
       "skillPath": "security/secure-headers-csp-builder/SKILL.md",
       "computedHash": "b246a09a500f2ad3ef089d6d902dc9f473b209b94feec7ee886d85ed73e87b6e"
     },
+    "vercel-composition-patterns": {
+      "source": "vercel-labs/agent-skills",
+      "sourceType": "github",
+      "skillPath": "skills/composition-patterns/SKILL.md",
+      "computedHash": "575757e3e25761c8c562d6e395d29f0b76c98b1273c0bd72d88e6ab1bc9c7d42"
+    },
     "vercel-react-best-practices": {
       "source": "vercel-labs/agent-skills",
       "sourceType": "github",
