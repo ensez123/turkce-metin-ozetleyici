@@ -40,13 +40,13 @@ export async function POST(req: NextRequest) {
 
     const genAI = new GoogleGenerativeAI(apiKey);
     
-    // Explicit Schema type cast for TypeScript
+    // Explicit Schema definition for clean JSON output
     const responseSchema: Schema = {
       type: SchemaType.OBJECT,
       properties: {
         summary: {
           type: SchemaType.STRING,
-          description: 'Metnin 3 ile 5 cümle arasındaki net Türkçe özeti',
+          description: 'Metnin 3 ile 5 cümle arasındaki tam, kesintisiz ve noktayla biten Türkçe özeti',
         },
         keyPoints: {
           type: SchemaType.ARRAY,
@@ -65,11 +65,16 @@ export async function POST(req: NextRequest) {
         responseMimeType: 'application/json',
         responseSchema,
         temperature: 0.2,
-        maxOutputTokens: 1024,
+        maxOutputTokens: 2048,
       },
     });
 
-    const prompt = `Aşağıdaki Türkçe metni dikkatlice oku, özümse ve SADECE Türkçe olarak kısa özet (3-5 cümle) ile ana noktaları çıkar.
+    const prompt = `Aşağıdaki Türkçe metni özetle.
+
+Önemli Kurallar:
+- "summary" alanına başlık (##, ###, başlık metni vb.) koyma, doğrudan özet cümleleriyle başla.
+- Her cümle eksiksiz tamamlanmış olmalı ve noktayla bitmelidir. Yarıda kesilmiş cümle kesinlikle bırakma.
+- 3 ile 5 cümle arasında tam ve akıcı bir özet çıkar.
 
 Özetlenecek Metin:
 """
@@ -88,7 +93,7 @@ ${trimmedText}
           responseMimeType: 'application/json',
           responseSchema,
           temperature: 0.2,
-          maxOutputTokens: 1024,
+          maxOutputTokens: 2048,
         },
       });
       const fallbackResult = await fallbackModel.generateContent(prompt);
@@ -136,8 +141,26 @@ ${trimmedText}
       };
     }
 
+    // Sanitize summary text: Remove any markdown heading tags like ## or #
+    let cleanSummary = (parsedData.summary || '')
+      .replace(/^#+\s*/, '')
+      .replace(/^##\s*/, '')
+      .trim();
+
+    // Guarantee sentences are complete and not cut off mid-word
+    if (cleanSummary && !/[.!?]$/.test(cleanSummary)) {
+      const lastPunct = Math.max(
+        cleanSummary.lastIndexOf('.'),
+        cleanSummary.lastIndexOf('!'),
+        cleanSummary.lastIndexOf('?')
+      );
+      if (lastPunct > 30) {
+        cleanSummary = cleanSummary.slice(0, lastPunct + 1);
+      }
+    }
+
     const originalWords = trimmedText.split(/\s+/).filter(Boolean).length;
-    const summaryWords = (parsedData.summary || '').split(/\s+/).filter(Boolean).length || 1;
+    const summaryWords = cleanSummary.split(/\s+/).filter(Boolean).length || 1;
     const reductionPercentage = Math.max(
       5,
       Math.min(95, Math.round(((originalWords - summaryWords) / originalWords) * 100))
@@ -145,7 +168,7 @@ ${trimmedText}
     const estimatedReadTimeSeconds = Math.max(5, Math.ceil(summaryWords / 3.3));
 
     const finalResult: SummaryResult = {
-      summary: parsedData.summary || 'Özet metni oluşturuldu.',
+      summary: cleanSummary || 'Özet metni oluşturuldu.',
       keyPoints: Array.isArray(parsedData.keyPoints) && parsedData.keyPoints.length > 0 ? parsedData.keyPoints : ['Ana fikirler hazırlandı.'],
       originalWordCount: originalWords,
       summaryWordCount: summaryWords,
