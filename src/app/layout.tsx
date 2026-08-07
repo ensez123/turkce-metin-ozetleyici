@@ -53,6 +53,9 @@ export const metadata: Metadata = {
       "max-snippet": -1,
     },
   },
+  verification: {
+    google: "googlee2c4fbaf79df1872",
+  },
 };
 
 const webAppSchema = {
