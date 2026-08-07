@@ -1,0 +1,19 @@
+# Türkçe Metin Özetleyici
+
+> Ücretsiz, hızlı ve yapay zeka (Google Gemini 1.5 Flash) destekli Türkçe metin ve makale özetleme uygulaması.
+
+## Özellikler
+- Uzun Türkçe metinleri saniyeler içinde 3-5 cümlelik kısa ve anlaşılır özetlere dönüştürür.
+- Önemli vurguları ve ana fikirleri madde madde listeler.
+- Metnin okuma süresi, kelime sayısı ve küçülme oranını hesaplar.
+- Özetlenen metin hakkında yapay zekaya özel sorular sorma imkanı sunar (Akıllı Soru-Cevap).
+
+## Kullanım Alanları
+- **Öğrenciler:** Ders notları, ödevler ve uzun akademik makaleleri hızlıca kavrama.
+- **Akademisyenler & Araştırmacılar:** Araştırma metinlerinin ve tezlerin özünü çıkarma.
+- **İçerik Üreticileri & Yazarlar:** Haber, blog ve makalelerin ana başlıklarını hızlıca derleme.
+- **Profesyoneller:** İş raporlarını ve uzun e-postaları hızlı okuma.
+
+## Bağlantılar
+- Web Sitesi: https://turkce-metin-ozetleyici.vercel.app
+- Fiyatlandırma: Ücretsiz (Kayıt gerektirmez)

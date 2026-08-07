@@ -643,6 +643,157 @@ export default function Home() {
             </div>
           </div>
         )}
+
+        {/* SEO Information & FAQ Section */}
+        <section className="pt-10 border-t border-slate-800/80 space-y-8">
+          <script
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{
+              __html: JSON.stringify({
+                "@context": "https://schema.org",
+                "@type": "FAQPage",
+                mainEntity: [
+                  {
+                    "@type": "Question",
+                    name: "Türkçe metin özetleyici ücretsiz mi?",
+                    acceptedAnswer: {
+                      "@type": "Answer",
+                      text: "Evet, Türkçe Metin Özetleyici tamamen ücretsizdir. Kayıt gerektirmeden dilediğiniz kadar Türkçe metni saniyeler içinde özetleyebilirsiniz.",
+                    },
+                  },
+                  {
+                    "@type": "Question",
+                    name: "Özet çıkarma işleminde hangi yapay zeka modeli kullanılıyor?",
+                    acceptedAnswer: {
+                      "@type": "Answer",
+                      text: "Uygulamamız Google Gemini AI altyapısını kullanmaktadır. Türkçe dil bilgisine ve bağlama hakim güncel yapay zeka modelleri ile anlam kaybı yaşanmadan özet çıkarılır.",
+                    },
+                  },
+                  {
+                    "@type": "Question",
+                    name: "Hangi tür metinleri özetleyebilirim?",
+                    acceptedAnswer: {
+                      "@type": "Answer",
+                      text: "Akademik makaleler, ders notları, haber yazıları, kitap özetleri, iş raporları ve e-postalar dahil olmak üzere 4.000 karaktere kadar tüm Türkçe metinleri özetleyebilirsiniz.",
+                    },
+                  },
+                  {
+                    "@type": "Question",
+                    name: "Özetlenen metin hakkında nasıl soru sorabilirim?",
+                    acceptedAnswer: {
+                      "@type": "Answer",
+                      text: "Metniniz özetlendikten sonra alt kısımda açılan 'Akıllı Soru-Cevap' bölümünden metnin detayları, ana fikri veya anlamadığınız noktaları hakkında doğrudan yapay zekaya sorular sorabilirsiniz.",
+                    },
+                  },
+                  {
+                    "@type": "Question",
+                    name: "Girdiğim metinler ve verilerim saklanıyor mu?",
+                    acceptedAnswer: {
+                      "@type": "Answer",
+                      text: "Hayır. Girdiğiniz metinler yalnızca anlık olarak işlenir ve hiçbir sunucuda veya veritabanında kayıt altına alınmaz. Gizliliğiniz güvendedir.",
+                    },
+                  },
+                ],
+              }),
+            }}
+          />
+
+          {/* About Section */}
+          <div className="glass-card rounded-2xl p-6 sm:p-8 border border-slate-700/50 space-y-4">
+            <h2 className="text-xl sm:text-2xl font-bold text-slate-100 flex items-center gap-2">
+              <BookOpen className="w-5 h-5 text-indigo-400" />
+              <span>Türkçe Metin Özetleyici Nedir?</span>
+            </h2>
+            <p className="text-slate-300 text-sm sm:text-base leading-relaxed">
+              <strong>Türkçe Metin Özetleyici</strong>, uzun akademik makaleleri, ders notlarını, haberleri ve karmaşık metinleri Google Gemini yapay zekası desteğiyle saniyeler içinde anlaşılır özetlere dönüştüren ücretsiz bir online araçtır. Metninizin özünü koruyarak 3-5 cümlelik kısa özet çıkarır ve önemli vurguları madde madde sunar.
+            </p>
+          </div>
+
+          {/* Target Audience Section */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div className="glass-card rounded-xl p-5 border border-slate-700/50 space-y-2">
+              <h3 className="font-semibold text-slate-200 text-base flex items-center gap-2">
+                🎓 Öğrenciler & Akademisyenler
+              </h3>
+              <p className="text-xs sm:text-sm text-slate-400 leading-relaxed">
+                Yüzlerce sayfalık tezleri, akademik makaleleri ve ders notlarını hızlıca analiz edin. Sınavlara ve araştırmalara zamandan tasarruf ederek hazırlanın.
+              </p>
+            </div>
+
+            <div className="glass-card rounded-xl p-5 border border-slate-700/50 space-y-2">
+              <h3 className="font-semibold text-slate-200 text-base flex items-center gap-2">
+                💼 Profesyoneller & İş Dünyası
+              </h3>
+              <p className="text-xs sm:text-sm text-slate-400 leading-relaxed">
+                Uzun iş raporlarını, e-postaları ve sektör analizlerini saniyeler içinde okuyup karar alma süreçlerinizi hızlandırın.
+              </p>
+            </div>
+
+            <div className="glass-card rounded-xl p-5 border border-slate-700/50 space-y-2">
+              <h3 className="font-semibold text-slate-200 text-base flex items-center gap-2">
+                ✍️ İçerik Üreticileri & Yazarlar
+              </h3>
+              <p className="text-xs sm:text-sm text-slate-400 leading-relaxed">
+                Haberlerin, kaynak yazıların ve rakip içeriklerin ana noktalarını saniyeler içinde çıkararak içerik üretim sürecinizi verimli kılın.
+              </p>
+            </div>
+          </div>
+
+          {/* FAQ Accordion / Cards Section */}
+          <div className="glass-card rounded-2xl p-6 sm:p-8 border border-slate-700/50 space-y-6">
+            <div className="flex items-center gap-2 pb-2 border-b border-slate-800">
+              <HelpCircle className="w-5 h-5 text-purple-400" />
+              <h2 className="text-xl sm:text-2xl font-bold text-slate-100">Sıkça Sorulan Sorular (SSS)</h2>
+            </div>
+
+            <div className="space-y-4">
+              <div className="p-4 rounded-xl bg-slate-900/60 border border-slate-800 space-y-1.5">
+                <h3 className="font-semibold text-sm sm:text-base text-indigo-300">
+                  1. Türkçe metin özetleyici ücretsiz mi?
+                </h3>
+                <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
+                  Evet, aracımız %100 ücretsizdir. Herhangi bir üyelik açmadan veya kredi kartı girmeden doğrudan kullanabilirsiniz.
+                </p>
+              </div>
+
+              <div className="p-4 rounded-xl bg-slate-900/60 border border-slate-800 space-y-1.5">
+                <h3 className="font-semibold text-sm sm:text-base text-indigo-300">
+                  2. Hangi yapay zeka teknolojisi kullanılıyor?
+                </h3>
+                <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
+                  Uygulamamız Google Gemini AI altyapısını kullanmaktadır. Gelişmiş doğal dil işleme (NLP) yeteneği sayesinde Türkçe metinleri bağlamından koparmadan özetler.
+                </p>
+              </div>
+
+              <div className="p-4 rounded-xl bg-slate-900/60 border border-slate-800 space-y-1.5">
+                <h3 className="font-semibold text-sm sm:text-base text-indigo-300">
+                  3. Hangi tür metinleri özetleyebilirim?
+                </h3>
+                <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
+                  Makaleler, kitap özetleri, haber metinleri, ders notları, iş raporları ve blog yazıları dahil 4.000 karaktere kadar olan tüm Türkçe metinleri özetleyebilirsiniz.
+                </p>
+              </div>
+
+              <div className="p-4 rounded-xl bg-slate-900/60 border border-slate-800 space-y-1.5">
+                <h3 className="font-semibold text-sm sm:text-base text-indigo-300">
+                  4. Özetlenen metin hakkında nasıl soru sorabilirim?
+                </h3>
+                <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
+                  Özet oluşturulduktan sonra ekrana gelen 'Akıllı Soru-Cevap' bölümünden metninizle ilgili merak ettiğiniz veya detaylandırmak istediğiniz her şeyi sorabilirsiniz.
+                </p>
+              </div>
+
+              <div className="p-4 rounded-xl bg-slate-900/60 border border-slate-800 space-y-1.5">
+                <h3 className="font-semibold text-sm sm:text-base text-indigo-300">
+                  5. Verilerim ve metinlerim saklanıyor mu?
+                </h3>
+                <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
+                  Metinleriniz ve sorduğunuz sorular hiçbir şekilde veritabanlarımızda kaydedilmez veya saklanmaz. Tüm işlemler anlık olarak gerçekleşir.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
       </main>
 
       {/* Footer */}
