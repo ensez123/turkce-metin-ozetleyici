@@ -15,10 +15,14 @@ import {
   BookOpen,
   ArrowRight,
   RefreshCw,
-  AlertCircle
+  AlertCircle,
+  MessageSquareText,
+  Send,
+  HelpCircle,
+  Bot
 } from 'lucide-react';
-import { SummaryResult } from '@/types';
-import { summarizeWithGemini } from '@/utils/geminiSummarizer';
+import { SummaryResult, QAItem } from '@/types';
+import { summarizeWithGemini, askQuestionAboutText } from '@/utils/geminiSummarizer';
 import { SAMPLE_TEXTS } from '@/utils/mockSummarizer';
 
 export default function Home() {
@@ -27,11 +31,19 @@ export default function Home() {
   const [result, setResult] = useState<SummaryResult | null>(null);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
+  // Q&A States
+  const [qaList, setQaList] = useState<QAItem[]>([]);
+  const [questionInput, setQuestionInput] = useState<string>('');
+  const [isAsking, setIsAsking] = useState<boolean>(false);
+  const [askError, setAskError] = useState<string | null>(null);
+
   // Copy feedback states
   const [copiedSummary, setCopiedSummary] = useState<boolean>(false);
   const [copiedPoints, setCopiedPoints] = useState<boolean>(false);
+  const [copiedQAId, setCopiedQAId] = useState<string | null>(null);
 
   const resultsRef = useRef<HTMLDivElement>(null);
+  const qaSectionRef = useRef<HTMLDivElement>(null);
 
   // Character and word counts
   const charCount = inputText.length;
@@ -51,6 +63,9 @@ export default function Home() {
     setErrorMsg(null);
     setIsLoading(true);
     setResult(null);
+    setQaList([]);
+    setQuestionInput('');
+    setAskError(null);
 
     try {
       const summaryRes = await summarizeWithGemini(inputText);
@@ -65,6 +80,40 @@ export default function Home() {
       setErrorMsg(err.message || 'Özetleme sırasında bir hata oluştu. Lütfen tekrar deneyin.');
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleAskQuestion = async (customQuestion?: string) => {
+    const qToAsk = customQuestion || questionInput;
+    if (!qToAsk.trim() || !inputText.trim() || !result) return;
+
+    setAskError(null);
+    setIsAsking(true);
+
+    try {
+      const answer = await askQuestionAboutText(inputText, result.summary, qToAsk.trim());
+
+      const newItem: QAItem = {
+        id: Date.now().toString(),
+        question: qToAsk.trim(),
+        answer,
+        timestamp: new Date().toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' }),
+      };
+
+      setQaList((prev) => [newItem, ...prev]);
+      if (!customQuestion) {
+        setQuestionInput('');
+      }
+
+      // Scroll to QA section
+      setTimeout(() => {
+        qaSectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }, 100);
+    } catch (err: any) {
+      console.error('Soru sorma hatası:', err);
+      setAskError(err.message || 'Soru yanıtlanırken bir hata oluştu.');
+    } finally {
+      setIsAsking(false);
     }
   };
 
@@ -84,12 +133,18 @@ export default function Home() {
     setInputText('');
     setResult(null);
     setErrorMsg(null);
+    setQaList([]);
+    setQuestionInput('');
+    setAskError(null);
   };
 
   const handleLoadSample = (sampleText: string) => {
     setInputText(sampleText);
     setResult(null);
     setErrorMsg(null);
+    setQaList([]);
+    setQuestionInput('');
+    setAskError(null);
   };
 
   const handleCopySummary = () => {
@@ -107,6 +162,18 @@ export default function Home() {
     setTimeout(() => setCopiedPoints(false), 2000);
   };
 
+  const handleCopyQA = (id: string, text: string) => {
+    navigator.clipboard.writeText(text);
+    setCopiedQAId(id);
+    setTimeout(() => setCopiedQAId(null), 2000);
+  };
+
+  const PRESET_QUESTIONS = [
+    'Bu metinden çıkarılacak en temel ders nedir?',
+    'Bunu daha basit ve anlaşılır bir dille açıklayabilir misin?',
+    'Bu metinde en çok vurgulanan riskler veya fırsatlar nelerdir?'
+  ];
+
   return (
     <div className="min-h-screen flex flex-col justify-between text-slate-100">
       {/* Header */}
@@ -120,7 +187,7 @@ export default function Home() {
               <h1 className="font-bold text-xl tracking-tight bg-gradient-to-r from-white via-slate-100 to-slate-300 bg-clip-text text-transparent">
                 Türkçe Metin Özetleyici
               </h1>
-              <p className="text-xs text-slate-400 font-medium">Akıllı Gemini AI ile Anında Özet</p>
+              <p className="text-xs text-slate-400 font-medium">Akıllı Gemini AI ile Özet & Soru-Cevap</p>
             </div>
           </div>
 
@@ -141,7 +208,7 @@ export default function Home() {
             Uzun Metinleri Saniyeler İçinde Özümseyin
           </h2>
           <p className="text-slate-400 text-base sm:text-lg max-w-2xl mx-auto leading-relaxed">
-            Makalelerinizi veya uzun metinlerinizi girin. Google Gemini yapay zekası 3-5 cümlelik özeti ve ana noktaları anında hazırlasın.
+            Makalelerinizi veya uzun metinlerinizi girin. Google Gemini yapay zekası 3-5 cümlelik özeti, ana noktaları hazırlasın ve sorularınızı yanıtlasın.
           </p>
 
           {/* Quick Badges */}
@@ -155,8 +222,8 @@ export default function Home() {
               <span>3-5 Cümle Kısa Özet</span>
             </div>
             <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-800/80 border border-slate-700/60 text-xs font-medium text-slate-300">
-              <ListCheck className="w-3.5 h-3.5 text-emerald-400" />
-              <span>Madde Madde Ana Noktalar</span>
+              <MessageSquareText className="w-3.5 h-3.5 text-purple-400" />
+              <span>Akıllı Soru-Cevap</span>
             </div>
           </div>
         </section>
@@ -174,7 +241,7 @@ export default function Home() {
                 <button
                   key={sample.id}
                   onClick={() => handleLoadSample(sample.text)}
-                  className="px-2.5 py-1 text-xs rounded-md bg-slate-800 hover:bg-indigo-600/30 text-slate-300 hover:text-indigo-300 border border-slate-700/60 transition-colors"
+                  className="px-2.5 py-1 text-xs rounded-md bg-slate-800 hover:bg-indigo-600/30 text-slate-300 hover:text-indigo-300 border border-slate-700/60 transition-colors cursor-pointer"
                 >
                   {sample.title}
                 </button>
@@ -380,6 +447,149 @@ export default function Home() {
                   </li>
                 ))}
               </ul>
+            </div>
+
+            {/* Q&A Section */}
+            <div ref={qaSectionRef} className="glass-card rounded-2xl p-6 border border-purple-500/30 shadow-xl space-y-5">
+              <div className="flex items-center justify-between pb-3 border-b border-slate-800">
+                <div className="flex items-center gap-2">
+                  <div className="p-1.5 rounded-lg bg-purple-500/20 text-purple-400">
+                    <MessageSquareText className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-lg text-slate-100">Metin Hakkında Soru Sor</h3>
+                    <p className="text-xs text-slate-400">Metin veya özet hakkında aklınıza takılan detayları Gemini AI'ya danışın.</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Preset Sample Questions */}
+              <div className="space-y-2">
+                <div className="text-xs font-medium text-slate-400 flex items-center gap-1">
+                  <HelpCircle className="w-3.5 h-3.5 text-purple-400" />
+                  <span>Örnek Sorular:</span>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {PRESET_QUESTIONS.map((q, idx) => (
+                    <button
+                      key={idx}
+                      onClick={() => {
+                        setQuestionInput(q);
+                        handleAskQuestion(q);
+                      }}
+                      disabled={isAsking}
+                      className="px-3 py-1.5 text-xs rounded-lg bg-slate-800 hover:bg-purple-600/30 text-slate-300 hover:text-purple-300 border border-slate-700/60 transition-colors text-left cursor-pointer disabled:opacity-50"
+                    >
+                      "{q}"
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Question Input Form */}
+              <div className="space-y-3">
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    value={questionInput}
+                    onChange={(e) => {
+                      setQuestionInput(e.target.value);
+                      if (askError) setAskError(null);
+                    }}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' && !isAsking && questionInput.trim()) {
+                        e.preventDefault();
+                        handleAskQuestion();
+                      }
+                    }}
+                    placeholder="Örn: Bu metinde geçen ana riskler nelerdir? Veya bu cümleden ne anladın?"
+                    className="flex-1 glass-input rounded-xl px-4 py-3 text-slate-100 placeholder-slate-500 text-sm focus:outline-none transition-all"
+                  />
+
+                  <button
+                    onClick={() => handleAskQuestion()}
+                    disabled={isAsking || !questionInput.trim()}
+                    className={`px-5 py-3 rounded-xl font-semibold text-white transition-all flex items-center justify-center gap-2 shrink-0 ${
+                      isAsking || !questionInput.trim()
+                        ? 'bg-slate-800 text-slate-500 border border-slate-700 cursor-not-allowed'
+                        : 'bg-purple-600 hover:bg-purple-500 active:scale-95 shadow-lg shadow-purple-500/25 cursor-pointer'
+                    }`}
+                  >
+                    {isAsking ? (
+                      <RefreshCw className="w-4 h-4 animate-spin" />
+                    ) : (
+                      <>
+                        <span>Sor</span>
+                        <Send className="w-4 h-4" />
+                      </>
+                    )}
+                  </button>
+                </div>
+
+                {askError && (
+                  <div className="flex items-center gap-2 p-3 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-300 text-xs">
+                    <AlertCircle className="w-4 h-4 shrink-0 text-rose-400" />
+                    <span>{askError}</span>
+                  </div>
+                )}
+              </div>
+
+              {/* QA History List */}
+              {qaList.length > 0 && (
+                <div className="space-y-4 pt-3 border-t border-slate-800">
+                  <div className="flex items-center justify-between text-xs text-slate-400">
+                    <span>Soru & Yanıt Geçmişi ({qaList.length})</span>
+                  </div>
+
+                  <div className="space-y-4">
+                    {qaList.map((item) => (
+                      <div
+                        key={item.id}
+                        className="glass-card rounded-xl p-4 border border-slate-700/80 space-y-3 animate-in fade-in duration-300"
+                      >
+                        {/* Question Header */}
+                        <div className="flex items-start justify-between gap-3">
+                          <div className="flex items-center gap-2 text-indigo-300 font-semibold text-sm">
+                            <span className="p-1 rounded bg-indigo-500/20 text-indigo-400">
+                              <HelpCircle className="w-3.5 h-3.5" />
+                            </span>
+                            <span>{item.question}</span>
+                          </div>
+                          <span className="text-[10px] text-slate-500 shrink-0">{item.timestamp}</span>
+                        </div>
+
+                        {/* Answer Content */}
+                        <div className="flex items-start gap-2.5 pt-1 text-slate-200 text-sm leading-relaxed">
+                          <div className="p-1 rounded bg-purple-500/20 text-purple-400 mt-0.5 shrink-0">
+                            <Bot className="w-4 h-4" />
+                          </div>
+                          <div className="flex-1 whitespace-pre-wrap">{item.answer}</div>
+                        </div>
+
+                        {/* Card Actions */}
+                        <div className="flex justify-end pt-1">
+                          <button
+                            onClick={() => handleCopyQA(item.id, `Soru: ${item.question}\nCevap: ${item.answer}`)}
+                            className="flex items-center gap-1 text-[11px] text-slate-400 hover:text-slate-200 bg-slate-800/80 hover:bg-slate-700 px-2.5 py-1 rounded border border-slate-700 transition-colors cursor-pointer"
+                          >
+                            {copiedQAId === item.id ? (
+                              <>
+                                <Check className="w-3 h-3 text-emerald-400" />
+                                <span className="text-emerald-400">Kopyalandı</span>
+                              </>
+                            ) : (
+                              <>
+                                <Copy className="w-3 h-3 text-slate-400" />
+                                <span>Kopyala</span>
+                              </>
+                            )}
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         )}

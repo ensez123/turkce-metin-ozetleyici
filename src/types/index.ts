@@ -13,3 +13,10 @@ export interface SampleTextOption {
   category: string;
   text: string;
 }
+
+export interface QAItem {
+  id: string;
+  question: string;
+  answer: string;
+  timestamp: string;
+}
