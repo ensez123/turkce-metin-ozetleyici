@@ -7,7 +7,7 @@ export async function POST(req: NextRequest) {
 
     if (!apiKey) {
       return NextResponse.json(
-        { error: 'Gemini API anahtarı sunucu tarafında bulunamadı (.env.local kontrol edin).' },
+        { error: 'Gemini API anahtarı sunucu tarafında bulunamadı.' },
         { status: 500 }
       );
     }
@@ -17,14 +17,14 @@ export async function POST(req: NextRequest) {
 
     if (!question || typeof question !== 'string' || !question.trim()) {
       return NextResponse.json(
-        { error: 'Lütfen metin hakkında sormak istediğiniz soruyu girin.' },
+        { error: 'Lütfen sormak istediğiniz soruyu girin.' },
         { status: 400 }
       );
     }
 
     if (!originalText || typeof originalText !== 'string' || !originalText.trim()) {
       return NextResponse.json(
-        { error: 'Soru sorabilmek için önce bir metin özetlenmiş olmalıdır.' },
+        { error: 'Soru sorabilmek için önce bir metin özetlenmelidir.' },
         { status: 400 }
       );
     }
@@ -33,26 +33,31 @@ export async function POST(req: NextRequest) {
     const model = genAI.getGenerativeModel({
       model: 'gemini-flash-latest',
       generationConfig: {
-        temperature: 0.4,
+        temperature: 0.3,
+        maxOutputTokens: 800,
       },
     });
 
-    const prompt = `Aşağıda orijinal Türkçe metin ve bu metnin kısa özeti verilmiştir. Kullanıcının metinle alakalı sorduğu soruyu dikkatle değerlendir ve metne/özete sadık kalarak tamamen Türkçe olarak net, anlaşılır ve açıklayıcı bir yanıt ver.
+    const prompt = `Sen uzman bir Türkçe metin analiz asistanısın. Aşağıda verilen orijinal metin ve özeti doğrultusunda kullanıcının sorusuna doğrudan, kısa ve öz bir yanıt ver.
+
+Kurallar:
+- Yanıtın kesinlikle net, doğru ve Türkçe olmalıdır.
+- Giriş/gelişme tekerlemeleri yapma, doğrudan soruya cevap ver.
+- Gereksiz dolgu cümleler kullanma.
 
 Orijinal Metin:
 """
 ${originalText.trim()}
 """
 
-Kısa Özet:
+Özet:
 """
 ${summary ? summary.trim() : ''}
 """
 
-Kullanıcının Sorusu:
-"${question.trim()}"
+Soru: "${question.trim()}"
 
-Lütfen doğrudan soruya odaklanan açıklayıcı yanıtını Türkçe olarak yaz:`;
+Yanıtın:`;
 
     const result = await model.generateContent(prompt);
     const answer = result.response.text().trim();
@@ -60,9 +65,18 @@ Lütfen doğrudan soruya odaklanan açıklayıcı yanıtını Türkçe olarak ya
     return NextResponse.json({ success: true, answer });
   } catch (error: any) {
     console.error('Gemini Q&A Hatası:', error);
-    const errorMessage = error?.message || 'Soru yanıtlanırken bir hata oluştu.';
+    
+    let userFriendlyError = 'Soru yanıtlanırken bir hata oluştu.';
+    const msg = (error?.message || '').toLowerCase();
+
+    if (msg.includes('429') || msg.includes('quota') || msg.includes('resource_exhausted')) {
+      userFriendlyError = 'Gemini API şu an yoğun. Lütfen birkaç saniye sonra sorunuzu tekrar sorun.';
+    } else if (msg.includes('503') || msg.includes('overloaded')) {
+      userFriendlyError = 'Gemini servisi şu an meşgul. Lütfen yeniden deneyin.';
+    }
+
     return NextResponse.json(
-      { error: `Soru Yanıtlanamadı: ${errorMessage}` },
+      { error: userFriendlyError },
       { status: 500 }
     );
   }

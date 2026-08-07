@@ -8,7 +8,7 @@ export async function POST(req: NextRequest) {
 
     if (!apiKey) {
       return NextResponse.json(
-        { error: 'Gemini API anahtarı sunucu tarafında bulunamadı (.env.local kontrol edin).' },
+        { error: 'Gemini API anahtarı bulunamadı. Lütfen .env.local dosyasını kontrol edin.' },
         { status: 500 }
       );
     }
@@ -18,7 +18,7 @@ export async function POST(req: NextRequest) {
 
     if (!text || typeof text !== 'string' || !text.trim()) {
       return NextResponse.json(
-        { error: 'Lütfen özetlenecek metni gönderin.' },
+        { error: 'Lütfen özetlenecek metni girin.' },
         { status: 400 }
       );
     }
@@ -26,39 +26,47 @@ export async function POST(req: NextRequest) {
     const trimmedText = text.trim();
     if (trimmedText.length < 25) {
       return NextResponse.json(
-        { error: 'Metin çok kısa. Anlamlı bir özet için lütfen en az 1-2 cümle metin girin.' },
+        { error: 'Metin çok kısa. Anlamlı bir özet için en az 1-2 cümle girin.' },
+        { status: 400 }
+      );
+    }
+
+    if (trimmedText.length > 4000) {
+      return NextResponse.json(
+        { error: 'Metin 4000 karakter sınırını aşıyor. Lütfen metninizi kısaltın.' },
         { status: 400 }
       );
     }
 
     const genAI = new GoogleGenerativeAI(apiKey);
     
-    // Çalışan güncel model: gemini-flash-latest
+    // Optimized model config
     const model = genAI.getGenerativeModel({
       model: 'gemini-flash-latest',
       generationConfig: {
         responseMimeType: 'application/json',
-        temperature: 0.3,
+        temperature: 0.2,
+        maxOutputTokens: 1024,
       },
     });
 
-    const prompt = `Aşağıdaki Türkçe metni dikkatlice oku, özümse ve SADECE Türkçe olarak aşağıdaki JSON formatında yanıt ver:
+    const prompt = `Aşağıdaki Türkçe metni dikkatlice özümse ve SADECE Türkçe olarak aşağıdaki JSON formatında yanıt ver:
 
 {
-  "summary": "Metnin 3 ile 5 cümle arasında, akıcı ve öz net bir özeti.",
+  "summary": "Metnin tam 3 ile 5 cümle arasında, akıcı, net ve odaklanmış özeti.",
   "keyPoints": [
-    "Metinden çıkarılan 1. ana nokta veya önemli bilgi",
-    "Metinden çıkarılan 2. ana nokta veya önemli bilgi",
-    "Metinden çıkarılan 3. ana nokta veya önemli bilgi",
-    "Metinden çıkarılan 4. ana nokta veya önemli bilgi"
+    "1. Önemli ana nokta",
+    "2. Önemli ana nokta",
+    "3. Önemli ana nokta",
+    "4. Önemli ana nokta"
   ]
 }
 
-Önemli Kurallar:
-- Yanıtınız kesinlikle geçerli ve hatasız bir JSON objesi olmalıdır.
-- "summary" alanı kesinlikle 3 ila 5 cümle olmalıdır.
-- "keyPoints" dizisi en az 3, en fazla 6 madde içermelidir.
-- Tüm anlatım Türkçe olmalıdır.
+Kurallar:
+- Yanıtınız tamamen geçerli ve hatasız bir JSON objesi olmalıdır.
+- "summary" kesinlikle 3 ila 5 cümle olmalıdır. Gereksiz uzatmayın.
+- "keyPoints" dizisi en az 3, en fazla 5 öz nokta içermelidir.
+- Tüm anlatım net Türkçe olmalıdır.
 
 Özetlenecek Metin:
 """
@@ -70,19 +78,19 @@ ${trimmedText}
       const result = await model.generateContent(prompt);
       responseText = result.response.text().trim();
     } catch (modelErr: any) {
-      console.warn('gemini-flash-latest hatası, fallback gemini-flash-lite-latest deneniyor...', modelErr);
+      console.warn('gemini-flash-latest hatası, fallback deneniyor...', modelErr?.message);
       const fallbackModel = genAI.getGenerativeModel({
         model: 'gemini-flash-lite-latest',
         generationConfig: {
           responseMimeType: 'application/json',
-          temperature: 0.3,
+          temperature: 0.2,
+          maxOutputTokens: 1024,
         },
       });
       const fallbackResult = await fallbackModel.generateContent(prompt);
       responseText = fallbackResult.response.text().trim();
     }
 
-    // Clean markdown code fences if present
     const cleanJsonText = responseText.replace(/^```json\s*/i, '').replace(/^```\s*/, '').replace(/\s*```$/, '');
 
     let parsedData: { summary: string; keyPoints: string[] };
@@ -92,12 +100,11 @@ ${trimmedText}
     } catch (parseError) {
       console.error('Gemini JSON Parse Hatası:', parseError, cleanJsonText);
       return NextResponse.json(
-        { error: 'Gemini yanıtı işlenirken bir biçim hatası oluştu. Lütfen tekrar deneyin.' },
+        { error: 'Özet formatı işlenirken bir sorun oluştu. Lütfen tekrar deneyin.' },
         { status: 500 }
       );
     }
 
-    // Kelime istatistiklerini hesapla
     const originalWords = trimmedText.split(/\s+/).filter(Boolean).length;
     const summaryWords = parsedData.summary.split(/\s+/).filter(Boolean).length;
     const reductionPercentage = Math.max(
@@ -118,9 +125,21 @@ ${trimmedText}
     return NextResponse.json({ success: true, data: finalResult });
   } catch (error: any) {
     console.error('Gemini API Hatası:', error);
-    const errorMessage = error?.message || 'Gemini API ile iletişim kurulurken bir hata oluştu.';
+    
+    let userFriendlyError = 'Gemini API ile iletişim kurulurken bir hata oluştu.';
+    const msg = (error?.message || '').toLowerCase();
+    const status = error?.status;
+
+    if (msg.includes('429') || msg.includes('quota') || msg.includes('resource_exhausted')) {
+      userFriendlyError = 'Gemini API servisi şu an yoğun veya kota limitine ulaşıldı. Lütfen birkaç saniye bekleyip tekrar deneyin.';
+    } else if (msg.includes('503') || msg.includes('overloaded') || status === 503) {
+      userFriendlyError = 'Gemini sunucuları şu an yoğun. Lütfen tekrar deneyin.';
+    } else if (msg.includes('invalid') || status === 400) {
+      userFriendlyError = 'Metin işlenemedi. Lütfen geçerli bir Türkçe metin girdiğinizden emin olun.';
+    }
+
     return NextResponse.json(
-      { error: `Gemini API Hatası: ${errorMessage}` },
+      { error: userFriendlyError },
       { status: 500 }
     );
   }
