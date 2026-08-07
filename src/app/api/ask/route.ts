@@ -1,8 +1,25 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { GoogleGenerativeAI } from '@google/generative-ai';
+import { checkRateLimit } from '@/lib/rateLimiter';
 
 export async function POST(req: NextRequest) {
   try {
+    // Rate Limiting Kontrolü (Dakikada maks 15 istek)
+    const rateLimit = checkRateLimit(req, { limit: 15, windowMs: 60 * 1000 });
+    if (!rateLimit.success) {
+      return NextResponse.json(
+        { error: `Çok fazla istek gönderildi. Lütfen ${rateLimit.resetSeconds} saniye bekleyip tekrar deneyin.` },
+        {
+          status: 429,
+          headers: {
+            'Retry-After': String(rateLimit.resetSeconds),
+            'X-RateLimit-Limit': String(rateLimit.limit),
+            'X-RateLimit-Remaining': String(rateLimit.remaining),
+          },
+        }
+      );
+    }
+
     const apiKey = process.env.GEMINI_API_KEY;
 
     if (!apiKey) {
@@ -18,6 +35,14 @@ export async function POST(req: NextRequest) {
     if (!question || typeof question !== 'string' || !question.trim()) {
       return NextResponse.json(
         { error: 'Lütfen sormak istediğiniz soruyu girin.' },
+        { status: 400 }
+      );
+    }
+
+    const sanitizedQuestion = question.replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F]/g, '').trim();
+    if (sanitizedQuestion.length > 500) {
+      return NextResponse.json(
+        { error: 'Soru 500 karakter sınırını aşıyor.' },
         { status: 400 }
       );
     }

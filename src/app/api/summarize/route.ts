@@ -1,9 +1,26 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { GoogleGenerativeAI, SchemaType, Schema } from '@google/generative-ai';
 import { SummaryResult } from '@/types';
+import { checkRateLimit } from '@/lib/rateLimiter';
 
 export async function POST(req: NextRequest) {
   try {
+    // Rate Limiting Kontrolü (Dakikada maks 10 istek)
+    const rateLimit = checkRateLimit(req, { limit: 10, windowMs: 60 * 1000 });
+    if (!rateLimit.success) {
+      return NextResponse.json(
+        { error: `Çok fazla istek gönderildi. Lütfen ${rateLimit.resetSeconds} saniye bekleyip tekrar deneyin.` },
+        {
+          status: 429,
+          headers: {
+            'Retry-After': String(rateLimit.resetSeconds),
+            'X-RateLimit-Limit': String(rateLimit.limit),
+            'X-RateLimit-Remaining': String(rateLimit.remaining),
+          },
+        }
+      );
+    }
+
     const apiKey = process.env.GEMINI_API_KEY;
 
     if (!apiKey) {
@@ -23,7 +40,9 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const trimmedText = text.trim();
+    // Girdi Sanitizasyonu & Null Byte Temizliği
+    const sanitizedText = text.replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F]/g, '');
+    const trimmedText = sanitizedText.trim();
     if (trimmedText.length < 25) {
       return NextResponse.json(
         { error: 'Metin çok kısa. Anlamlı bir özet için en az 1-2 cümle girin.' },
