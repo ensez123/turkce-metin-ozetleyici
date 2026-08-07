@@ -7,16 +7,13 @@ interface RateLimitStore {
 
 const ipMap = new Map<string, RateLimitStore>();
 
-// Clean up stale entries every 5 minutes
-if (typeof setInterval !== 'undefined') {
-  setInterval(() => {
-    const now = Date.now();
-    for (const [ip, store] of ipMap.entries()) {
-      if (now > store.resetTime) {
-        ipMap.delete(ip);
-      }
+// Passive cleanup function to purge expired IP records without background timers
+function cleanupStaleEntries(now: number) {
+  for (const [ip, store] of ipMap.entries()) {
+    if (now > store.resetTime) {
+      ipMap.delete(ip);
     }
-  }, 5 * 60 * 1000);
+  }
 }
 
 export interface RateLimitOptions {
@@ -51,6 +48,7 @@ export function checkRateLimit(req: NextRequest, options: RateLimitOptions = {})
 
   const ip = getClientIp(req);
   const now = Date.now();
+  cleanupStaleEntries(now);
 
   const current = ipMap.get(ip);
 
