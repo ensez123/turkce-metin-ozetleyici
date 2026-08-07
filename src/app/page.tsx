@@ -27,6 +27,7 @@ import {
 import { SummaryResult, QAItem } from '@/types';
 import { summarizeWithGemini, askQuestionAboutText } from '@/utils/geminiSummarizer';
 import { SAMPLE_TEXTS } from '@/utils/mockSummarizer';
+import { track } from '@vercel/analytics';
 
 const MAX_CHAR_LIMIT = 4000;
 
@@ -116,6 +117,8 @@ export default function Home() {
       return;
     }
 
+    track('summarize_clicked', { length: inputText.length });
+
     setErrorMsg(null);
     setIsLoading(true);
     setResult(null);
@@ -199,6 +202,7 @@ export default function Home() {
   };
 
   const handleLoadSample = (sampleText: string) => {
+    track('load_sample_clicked');
     setInputText(sampleText);
     setResult(null);
     setErrorMsg(null);
@@ -210,6 +214,7 @@ export default function Home() {
 
   const handleCopySummary = () => {
     if (!result) return;
+    track('copy_summary_clicked');
     navigator.clipboard.writeText(result.summary);
     setCopiedSummary(true);
     triggerToast('Kısa özet panoya kopyalandı!');
