@@ -1,19 +1,20 @@
 # Türkçe Metin Özetleyici
 
-> Ücretsiz, hızlı ve yapay zeka (Google Gemini 1.5 Flash) destekli Türkçe metin ve makale özetleme uygulaması.
+> Yapay Zeka (Google Gemini AI) altyapısıyla Türkçe metin, makale ve ders notlarını hızlıca özetleyen ücretsiz web uygulaması.
 
-## Özellikler
-- Uzun Türkçe metinleri saniyeler içinde 3-5 cümlelik kısa ve anlaşılır özetlere dönüştürür.
-- Önemli vurguları ve ana fikirleri madde madde listeler.
-- Metnin okuma süresi, kelime sayısı ve küçülme oranını hesaplar.
-- Özetlenen metin hakkında yapay zekaya özel sorular sorma imkanı sunar (Akıllı Soru-Cevap).
+Türkçe Metin Özetleyici, uzun Türkçe metinleri saniyeler içinde 3-5 cümlelik kısa ve anlaşılır özetlere dönüştüren, ana fikir ve vurguları listeleyen ve metin hakkında doğrudan soru-cevap imkanı sunan yapay zeka destekli bir platformdur.
 
-## Kullanım Alanları
-- **Öğrenciler:** Ders notları, ödevler ve uzun akademik makaleleri hızlıca kavrama.
-- **Akademisyenler & Araştırmacılar:** Araştırma metinlerinin ve tezlerin özünü çıkarma.
-- **İçerik Üreticileri & Yazarlar:** Haber, blog ve makalelerin ana başlıklarını hızlıca derleme.
-- **Profesyoneller:** İş raporlarını ve uzun e-postaları hızlı okuma.
+## Temel Özellikler & Yetenekler
+- **Metin Özetleme:** Uzun metinleri, makaleleri ve raporları saniyeler içinde net ve dilbilgisi kurallarına uygun 3-5 cümlelik özetlere dönüştürür.
+- **Ana Madde Çıkarma:** Özetlenen metindeki en kritik bilgileri ve alt noktaları liste halinde sıralar.
+- **Akıllı Soru-Cevap:** Özet içeriği üzerinden yapay zekaya özel sorular sorarak detaylı bilgi alma imkanı sağlar.
+- **Metin Metrikleri:** Orijinal ve özet kelime sayılarını, tahmini okuma süresini ve küçülme oranını hesaplar.
 
-## Bağlantılar
+## Fiyatlandırma
+- **Ücretsiz Plan:** $0 / 0 TL — Kayıt veya üyelik zorunluluğu olmadan ücretsiz kullanım.
+
+## Resmi Bağlantılar
 - Web Sitesi: https://turkce-metin-ozetleyici.vercel.app
-- Fiyatlandırma: Ücretsiz (Kayıt gerektirmez)
+- Sıkça Sorulan Sorular: https://turkce-metin-ozetleyici.vercel.app/#sss-section
+- Fiyatlandırma Detayları: https://turkce-metin-ozetleyici.vercel.app/pricing.md
+

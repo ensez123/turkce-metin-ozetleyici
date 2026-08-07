@@ -21,7 +21,7 @@ export const metadata: Metadata = {
     template: "%s | Türkçe Metin Özetleyici",
   },
   description:
-    "Uzun Türkçe metinlerinizi, makalelerinizi ve ödevlerinizi Google Gemini yapay zekası ile saniyeler içinde ücretsiz özetleyin, ana noktaları çıkarın ve sorular sorun.",
+    "Uzun Türkçe metinlerinizi, makalelerinizi ve ders notlarınızı Google Gemini yapay zekası ile saniyeler içinde ücretsiz özetleyin, ana noktaları çıkarın ve sorular sorun.",
   keywords: [
     "türkçe metin özetleme",
     "metin özetleyici",
@@ -31,15 +31,21 @@ export const metadata: Metadata = {
     "pdf metin özetleme",
     "tez özetleme",
     "gemini ai özetleme",
+    "türkçe paragraf özetleme",
+    "akıllı soru cevap ai",
   ],
   authors: [{ name: "Türkçe Metin Özetleyici" }],
   alternates: {
     canonical: siteUrl,
+    languages: {
+      "tr": siteUrl,
+      "x-default": siteUrl,
+    },
   },
   openGraph: {
     title: "Türkçe Metin Özetleyici - Ücretsiz Yapay Zeka ile Özet Çıkarma",
     description:
-      "Uzun metinlerinizi saniyeler içinde 3-5 cümlelik kısa ve anlaşılır özetlere dönüştürün. Ücretsiz ve kayıt gerektirmez.",
+      "Uzun metinlerinizi saniyeler içinde 3-5 cümlelik kısa ve anlaşılır özetlere dönüştürün. Ücretsiz, hızlı ve kayıt gerektirmez.",
     url: siteUrl,
     siteName: "Türkçe Metin Özetleyici",
     locale: "tr_TR",
@@ -77,10 +83,38 @@ const webAppSchema = {
     "@type": "Offer",
     price: "0",
     priceCurrency: "TRY",
+    availability: "https://schema.org/InStock",
   },
   description:
     "Yapay zeka destekli ücretsiz Türkçe metin ve makale özetleme aracı. Metin özetleme, ana madde çıkarma ve soru-cevap sistemi sunar.",
   browserRequirements: "Requires JavaScript. Requires HTML5.",
+  featureList: [
+    "Otomatik 3-5 Cümlelik Türkçe Metin Özetleme",
+    "Ana Maddeler ve Vurgular Listesi",
+    "Özet Üzeri Akıllı Soru-Cevap (AI Chatbot)",
+    "Kelime Sayısı ve Okuma Süresi Hesabı",
+  ],
+};
+
+const organizationSchema = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  name: "Türkçe Metin Özetleyici",
+  url: siteUrl,
+  logo: `${siteUrl}/favicon.ico`,
+};
+
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    {
+      "@type": "ListItem",
+      position: 1,
+      name: "Ana Sayfa",
+      item: siteUrl,
+    },
+  ],
 };
 
 export default function RootLayout({
@@ -91,9 +125,19 @@ export default function RootLayout({
   return (
     <html lang="tr" className="dark h-full antialiased">
       <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(webAppSchema) }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
         />
       </head>
       <body className={`${inter.className} min-h-full flex flex-col selection:bg-indigo-500 selection:text-white`}>
@@ -104,3 +148,4 @@ export default function RootLayout({
     </html>
   );
 }
+

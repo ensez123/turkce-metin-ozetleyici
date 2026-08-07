@@ -37,6 +37,18 @@
       "skillPath": "security/secure-headers-csp-builder/SKILL.md",
       "computedHash": "b246a09a500f2ad3ef089d6d902dc9f473b209b94feec7ee886d85ed73e87b6e"
     },
+    "seo": {
+      "source": "addyosmani/web-quality-skills",
+      "sourceType": "github",
+      "skillPath": "skills/seo/SKILL.md",
+      "computedHash": "3d72168e266b759454b3e16028e7306ec716f21de6878cac7e98a0a3834ab5db"
+    },
+    "seo-aeo-best-practices": {
+      "source": "sanity-io/agent-toolkit",
+      "sourceType": "github",
+      "skillPath": "skills/seo-aeo-best-practices/SKILL.md",
+      "computedHash": "b6b2dd3af3c92f82f04b830dab2cc323f299d7c2e57f7d3619a5886caa7eeb08"
+    },
     "shadcn": {
       "source": "shadcn/ui",
       "sourceType": "github",
