@@ -48,7 +48,7 @@ function FaqRoot({ children, defaultOpenIndex = 0 }: { children: React.ReactNode
 
   return (
     <FaqContext value={{ openIndex, toggleFAQ }}>
-      <div className="space-y-3">{children}</div>
+      <div className="flex flex-col gap-3">{children}</div>
     </FaqContext>
   );
 }
@@ -97,7 +97,7 @@ function FaqHeader() {
         <span>{question.replace(/^\d+\.\s*/, '')}</span>
       </h3>
       <ChevronDown
-        className={`w-5 h-5 text-indigo-400 shrink-0 transition-transform duration-300 ${
+        className={`size-5 text-indigo-400 shrink-0 transition-transform duration-300 ${
           isOpen ? 'rotate-180 text-purple-400' : ''
         }`}
         aria-hidden="true"

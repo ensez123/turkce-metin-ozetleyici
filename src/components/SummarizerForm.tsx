@@ -42,16 +42,16 @@ export function SummarizerForm() {
   );
 
   return (
-    <div className="glass-card glass-card-hover rounded-2xl p-4 sm:p-7 shadow-2xl space-y-4 border border-slate-700/60 relative overflow-hidden">
+    <div className="glass-card glass-card-hover rounded-2xl p-4 sm:p-7 shadow-2xl flex flex-col gap-4 border border-slate-700/60 relative overflow-hidden">
       {/* Ambient Background Glow */}
-      <div className="absolute -top-24 -right-24 w-64 h-64 bg-indigo-600/10 rounded-full blur-3xl pointer-events-none" aria-hidden="true" />
-      <div className="absolute -bottom-24 -left-24 w-64 h-64 bg-purple-600/10 rounded-full blur-3xl pointer-events-none" aria-hidden="true" />
+      <div className="absolute -top-24 -right-24 size-64 bg-indigo-600/10 rounded-full blur-3xl pointer-events-none" aria-hidden="true" />
+      <div className="absolute -bottom-24 -left-24 size-64 bg-purple-600/10 rounded-full blur-3xl pointer-events-none" aria-hidden="true" />
 
       {/* Sample Selector & Quick Toolbar */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-800/80 relative z-10">
         <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
           <span className="text-xs font-bold text-indigo-400 flex items-center gap-1.5">
-            <FileText className="w-4 h-4 text-indigo-400" aria-hidden="true" />
+            <FileText className="size-4 text-indigo-400" aria-hidden="true" />
             <span>Örnek Metinler:</span>
           </span>
           {SAMPLE_TEXTS.map((sample) => (
@@ -75,7 +75,7 @@ export function SummarizerForm() {
             aria-label="Panodan metin yapıştır"
             className="flex items-center gap-1.5 px-3 py-2 text-xs rounded-md bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700/80 transition-colors cursor-pointer font-medium min-h-[44px] focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:outline-none"
           >
-            <Clipboard className="w-4 h-4 text-indigo-400" aria-hidden="true" />
+            <Clipboard className="size-4 text-indigo-400" aria-hidden="true" />
             <span>Yapıştır</span>
           </button>
           {inputText && (
@@ -86,7 +86,7 @@ export function SummarizerForm() {
               aria-label="Metin giriş alanını temizle"
               className="flex items-center gap-1.5 px-3 py-2 text-xs rounded-md bg-slate-800 hover:bg-rose-500/20 text-slate-300 hover:text-rose-300 border border-slate-700/80 transition-colors cursor-pointer font-medium min-h-[44px] focus-visible:ring-2 focus-visible:ring-rose-500 focus-visible:outline-none"
             >
-              <Trash2 className="w-4 h-4 text-slate-400 hover:text-rose-400" aria-hidden="true" />
+              <Trash2 className="size-4 text-slate-400 hover:text-rose-400" aria-hidden="true" />
               <span>Temizle</span>
             </button>
           )}
@@ -125,7 +125,7 @@ export function SummarizerForm() {
       {/* Limit Exceeded Warning */}
       {isOverLimit && (
         <div role="alert" aria-live="polite" className="flex items-center gap-2 p-3.5 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-300 text-xs sm:text-sm animate-in fade-in duration-200">
-          <AlertCircle className="w-4 h-4 shrink-0 text-rose-400" aria-hidden="true" />
+          <AlertCircle className="size-4 shrink-0 text-rose-400" aria-hidden="true" />
           <span>Metin 4000 karakter sınırını aşıyor ({charCount.toLocaleString('tr-TR')} / 4.000). Lütfen metninizi kısaltın.</span>
         </div>
       )}
@@ -133,7 +133,7 @@ export function SummarizerForm() {
       {/* Standard Error Banner */}
       {errorMsg && !isOverLimit && (
         <div role="alert" aria-live="polite" className="flex items-start gap-2.5 p-3.5 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-300 text-xs sm:text-sm animate-in fade-in duration-200">
-          <AlertCircle className="w-4 h-4 shrink-0 text-rose-400 mt-0.5" aria-hidden="true" />
+          <AlertCircle className="size-4 shrink-0 text-rose-400 mt-0.5" aria-hidden="true" />
           <span>{errorMsg}</span>
         </div>
       )}
@@ -161,12 +161,12 @@ export function SummarizerForm() {
         >
           {isLoading ? (
             <>
-              <RefreshCw className="w-5 h-5 animate-spin text-indigo-200" aria-hidden="true" />
+              <RefreshCw className="size-5 animate-spin text-indigo-200" aria-hidden="true" />
               <span>Gemini Analiz Ediyor…</span>
             </>
           ) : (
             <>
-              <Sparkles className="w-5 h-5 text-indigo-200" aria-hidden="true" />
+              <Sparkles className="size-5 text-indigo-200" aria-hidden="true" />
               <span>Metni Ücretsiz Özetle</span>
             </>
           )}

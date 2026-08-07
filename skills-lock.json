@@ -31,6 +31,12 @@
       "skillPath": "security/secure-headers-csp-builder/SKILL.md",
       "computedHash": "b246a09a500f2ad3ef089d6d902dc9f473b209b94feec7ee886d85ed73e87b6e"
     },
+    "shadcn": {
+      "source": "shadcn/ui",
+      "sourceType": "github",
+      "skillPath": "skills/shadcn/SKILL.md",
+      "computedHash": "f99ef49d9909d380ca683ceb8dc8c25775c20ee38140112c394e037d8c11ee18"
+    },
     "vercel-composition-patterns": {
       "source": "vercel-labs/agent-skills",
       "sourceType": "github",

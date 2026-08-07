@@ -16,10 +16,10 @@ export function SummarizerLoading() {
       role="status"
       aria-live="polite"
       aria-label="Gemini Yapay Zekası özetinizi oluşturuyor"
-      className="glass-card rounded-2xl p-8 text-center space-y-4 border border-indigo-500/40 animate-pulse-subtle shadow-2xl"
+      className="glass-card rounded-2xl p-8 text-center flex flex-col gap-4 border border-indigo-500/40 animate-pulse-subtle shadow-2xl"
     >
       <div className="inline-flex p-4 rounded-full bg-gradient-to-tr from-indigo-500/20 to-purple-500/20 text-indigo-400 ring-1 ring-indigo-500/30">
-        <Sparkles className="w-8 h-8 animate-spin" aria-hidden="true" />
+        <Sparkles className="size-8 animate-spin" aria-hidden="true" />
       </div>
       <div>
         <h3 className="text-lg font-bold text-slate-100">Gemini Yapay Zekası Yanıt Hazırlıyor</h3>

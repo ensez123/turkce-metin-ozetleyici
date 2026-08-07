@@ -22,7 +22,7 @@ export default function Home() {
       <Header />
 
       {/* Main Content */}
-      <main id="main-content" tabIndex={-1} className="max-w-4xl mx-auto px-3.5 sm:px-4 py-8 sm:py-12 flex-1 w-full space-y-8 sm:space-y-10 outline-none">
+      <main id="main-content" tabIndex={-1} className="max-w-4xl mx-auto px-3.5 sm:px-4 py-8 sm:py-12 flex-1 w-full flex flex-col gap-8 sm:gap-10 outline-none">
         {/* Above-the-Fold Hero Section (Server Rendered) */}
         <HeroSection />
 
@@ -30,7 +30,7 @@ export default function Home() {
         <SummarizerApp />
 
         {/* SEO Information & Interactive FAQ Accordion */}
-        <div className="space-y-8">
+        <div className="flex flex-col gap-8">
           <AboutSection />
           <AudienceCards />
           <FaqSection />

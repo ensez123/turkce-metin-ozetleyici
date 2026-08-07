@@ -3,7 +3,7 @@ import React from 'react';
 export function AudienceCards() {
   return (
     <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-      <div className="glass-card glass-card-hover rounded-xl p-5 border border-slate-700/60 space-y-2">
+      <div className="glass-card glass-card-hover rounded-xl p-5 border border-slate-700/60 flex flex-col gap-2">
         <h3 className="font-bold text-slate-100 text-base flex items-center gap-2">
           <span aria-hidden="true">🎓</span>
           <span>Öğrenciler & Akademisyenler</span>
@@ -13,7 +13,7 @@ export function AudienceCards() {
         </p>
       </div>
 
-      <div className="glass-card glass-card-hover rounded-xl p-5 border border-slate-700/60 space-y-2">
+      <div className="glass-card glass-card-hover rounded-xl p-5 border border-slate-700/60 flex flex-col gap-2">
         <h3 className="font-bold text-slate-100 text-base flex items-center gap-2">
           <span aria-hidden="true">💼</span>
           <span>Profesyoneller & İş Dünyası</span>
@@ -23,7 +23,7 @@ export function AudienceCards() {
         </p>
       </div>
 
-      <div className="glass-card glass-card-hover rounded-xl p-5 border border-slate-700/60 space-y-2">
+      <div className="glass-card glass-card-hover rounded-xl p-5 border border-slate-700/60 flex flex-col gap-2">
         <h3 className="font-bold text-slate-100 text-base flex items-center gap-2">
           <span aria-hidden="true">✍️</span>
           <span>İçerik Üreticileri & Yazarlar</span>

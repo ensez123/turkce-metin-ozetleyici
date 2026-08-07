@@ -11,7 +11,7 @@ export function Header() {
           aria-label="Türkçe Metin Özetleyici Ana Sayfa"
         >
           <div className="p-2 sm:p-2.5 rounded-xl bg-gradient-to-tr from-indigo-600 via-purple-600 to-indigo-700 text-white shadow-lg shadow-indigo-500/25 ring-1 ring-white/20">
-            <Sparkles className="w-5 h-5 sm:w-6 sm:h-6" aria-hidden="true" />
+            <Sparkles className="size-5 sm:size-6" aria-hidden="true" />
           </div>
           <div>
             <div className="flex items-center gap-2">
@@ -34,7 +34,7 @@ export function Header() {
             SSS
           </a>
           <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-gradient-to-r from-indigo-500/20 via-purple-500/20 to-indigo-500/20 text-indigo-300 border border-indigo-500/30 shadow-sm animate-glow-pulse">
-            <Sparkles className="w-3.5 h-3.5 text-purple-400" aria-hidden="true" />
+            <Sparkles className="size-3.5 text-purple-400" aria-hidden="true" />
             Gemini AI Altyapısı
           </span>
         </div>
