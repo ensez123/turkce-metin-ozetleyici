@@ -148,7 +148,7 @@ export default function Home() {
           <div className="flex flex-wrap justify-center gap-2 sm:gap-4 pt-2">
             <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-800/80 border border-slate-700/60 text-xs font-medium text-slate-300">
               <Zap className="w-3.5 h-3.5 text-amber-400" />
-              <span>Gemini 1.5 Flash Modeli</span>
+              <span>En Yeni Gemini Modeli</span>
             </div>
             <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-800/80 border border-slate-700/60 text-xs font-medium text-slate-300">
               <BookOpen className="w-3.5 h-3.5 text-indigo-400" />
